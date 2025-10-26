@@ -1,0 +1,62 @@
+let Ball;
+function setup() {
+  createCanvas(400, 400,WEBGL);
+  Ball = new ball();
+}
+
+function draw() {
+  background(220,100,100);
+  orbitControl();
+  noFill();
+  box(200);
+  Ball.update();
+  Ball.show();
+}
+
+function keyPressed(){
+  console.log(key)
+  switch (key){
+    case 'ArrowDown':Ball.acc.mult(0.8);break;
+    case 'ArrowUp':Ball.acc.mult(2);break;
+  }
+}
+class ball{
+  constructor(){
+    this.pos = createVector(0,0,0);
+    this.vel = p5.Vector.random3D().mult(10);
+    this.acc = createVector(0,0.8,0);
+    
+    this.r = 20;
+    this.limit=100-this.r;
+  }
+  update(){
+    this.pos.add(this.vel);
+    this.vel.add(this.acc);
+    
+    if (-this.limit>this.pos.x || this.pos.x>this.limit){
+      this.vel.x *= -1;
+    }
+    if (-this.limit>this.pos.y || this.pos.y>this.limit){
+      this.vel.y *= -1;
+    }
+    if (-this.limit>this.pos.z || this.pos.z>this.limit){
+      this.vel.z *= -1;
+    }
+    this.vel.mult(0.99);
+    if ( abs(this.vel.mag()) < 0.1){
+      this.vel.mult(0);
+    }
+    
+    if(abs(this.pos.mag())>this.limit*2){
+      this.pos.mult(0);
+    }
+  }
+  show(){
+    push();
+    translate(this.pos.x,this.pos.y,this.pos.z);
+    fill(0,255,0)
+    noStroke();
+    sphere(20);
+    pop();
+  }
+}
